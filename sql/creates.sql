@@ -1,0 +1,43 @@
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE quizzes (
+    id SERIAL PRIMARY KEY NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    url VARCHAR(255) NOT NULL,
+    public BOOLEAN NOT NULL,
+    creator INTEGER REFERENCES users(id) ON DELETE CASCADE NOT NULL
+);
+
+CREATE TABLE questions (
+    id SERIAL PRIMARY KEY NOT NULL,
+    question TEXT NOT NULL,
+    answer TEXT NOT NULL,
+    quiz_id INTEGER REFERENCES quizzes(id) ON DELETE CASCADE NOT NULL,
+    question_order INTEGER
+);
+
+CREATE TABLE attempts (
+    id SERIAL PRIMARY KEY NOT NULL,
+    url VARCHAR(255) NOT NULL,
+    attempter INTEGER REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    quiz_id INTEGER REFERENCES quizzes(id) ON DELETE CASCADE NOT NULL
+);
+
+CREATE TABLE attempted_questions (
+    id SERIAL PRIMARY KEY NOT NULL,
+    answer TEXT NOT NULL,
+    correct BOOLEAN,
+    question_id INTEGER REFERENCES questions(id) ON DELETE CASCADE NOT NULL,
+    attempt_id INTEGER REFERENCES attempts(id) ON DELETE CASCADE NOT NULL
+);
+
+CREATE TABLE shared_quizzes (
+    id SERIAL PRIMARY KEY NOT NULL,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    quiz_id INTEGER REFERENCES quizzes(id) ON DELETE CASCADE NOT NULL
+);
